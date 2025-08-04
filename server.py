@@ -2,6 +2,7 @@ from flask import Flask
 from flask_cors import CORS
 from src.config.database import init_db
 from src.routes.user_routes import user_bp
+from src.routes.pricing_routes import pricing_bp
 from dotenv import load_dotenv
 import os
 
@@ -29,9 +30,7 @@ CORS(app,
 
 # Register Blueprints with url_prefix
 app.register_blueprint(user_bp, url_prefix='/api/users')
-@app.route("/",methods=["GET"])
-def home():
-    return "home"
+app.register_blueprint(pricing_bp, url_prefix='/api/pricing')
 
 if __name__ == '__main__':
     app.run(debug=True,host="localhost")
