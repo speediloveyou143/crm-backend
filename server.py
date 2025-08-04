@@ -14,6 +14,10 @@ print(os.getenv('FRONTEND_ORIGIN'))  # Debug print to verify FRONTEND_ORIGIN is 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv('JWT_KEY')  # Load secret key from .env
 
+@app.route("/",methods=["GET"])
+def home():
+    return "home"
+
 # Initialize MongoDB connection
 init_db()
 
