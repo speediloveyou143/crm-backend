@@ -33,4 +33,4 @@ app.register_blueprint(user_bp, url_prefix='/api/users')
 app.register_blueprint(pricing_bp, url_prefix='/api/pricing')
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True,host="localhost")
