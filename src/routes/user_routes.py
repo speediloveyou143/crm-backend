@@ -3,11 +3,13 @@ from flask import current_app  # Import current_app
 import jwt
 import datetime
 import bcrypt
+import os
+
 from ..models.user_model import User
 
 user_bp = Blueprint('user', __name__)
 
-# Signup API
+#signup api
 @user_bp.route('/signup', methods=['POST'])
 def signup():
     try:
@@ -82,8 +84,51 @@ def signin():
             'message': 'Login successful',
             'user': {'name': user.name, 'email': user.email, 'role': user.role}
         }))
-        response.set_cookie('token', token, httponly=True, max_age=24*60*60, samesite='Lax', secure=True)
+        response.set_cookie("token",token, httponly=False, max_age=24*60*60,samesite="LAX")
+        response.set_cookie("id",str(user.id),httponly=False,max_age=24*60*60,samesite="LAX")
         return response, 200
 
     except Exception as e:
         return jsonify({'message': str(e)}), 500
+    
+
+#Signin with google
+@user_bp.route('/signIn-With-Google', methods=['POST'])
+def SignInWithGoogle():
+    try:
+        data = request.get_json()
+        if not data or 'email' not in data or 'name' not in data:
+            return jsonify({'message': 'Invalid input'}), 400
+
+        user = User.objects(email=data['email']).first()
+        if not user:
+            return jsonify({'message': 'Invalid credentials'}), 401
+
+       
+        # Generate JWT
+        token = jwt.encode({
+            'email': user.email,
+            # 'role': user.role,
+            'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=24)
+        }, current_app.config['SECRET_KEY'], algorithm="HS256")  # Use current_app instead of request.app
+
+        # Set cookie
+        response = make_response(jsonify({
+            'message': 'Login successful',
+            'user': {'name': user.name, 'email': user.email, 'role': user.role}
+        }))
+        response.set_cookie('token',token, httponly=False,samesite="LAX",secure=False)
+        response.set_cookie("id",str(user.id),httponly=False,samesite="LAX",secure=False)
+        return response, 200
+
+    except Exception as e:
+        return jsonify({'message': str(e)}), 500
+    
+
+
+@user_bp.route("/signout",methods=["POST"])
+def sign_out():
+    response=make_response("deleted")
+    response.delete_cookie("token")
+    response.delete_cookie("id")
+    return response
