@@ -13,7 +13,7 @@ def signup():
     try:
         data = request.get_json()
         # Validate required fields
-        required_fields = ['name', 'email', 'phone_number', 'password']  # Removed 'role' to match frontend
+        required_fields = ['name', 'email', 'phone_number', 'password',"company_Name","business_Type"]  # Removed 'role' to match frontend
         if not all(field in data for field in required_fields):
             return jsonify({'message': 'Missing required fields'}), 400
 
@@ -30,6 +30,8 @@ def signup():
             email=data['email'],
             phone_number=data.get('phone_number', ''),  # Use phone_number to match frontend 'mobile'
             password=hashed_password,
+            company_Name=data["company_Name"],
+            business_Type=data["business_Type"],
             role='user'  # Default role since frontend doesn't send it
         )
         user.save()
@@ -44,10 +46,11 @@ def signup():
         # Set cookie
         response = make_response(jsonify({
             'message': 'User created successfully',
-            'user': {'name': user.name, 'email': user.email, 'role': user.role}
+            'user': {'name': user.name, 'email': user.email, 'role': user.role,'phone_number':user.phone_number,'business_Type':user.business_Type,'company_Name':user.company_Name}
         }))
-        response.set_cookie('token', token, httponly=True, max_age=24*60*60, samesite='Lax', secure=True)
-        return response, 201
+        response.set_cookie('token', token, httponly=False, max_age=24*60*60, samesite='Lax', secure=False)
+        response.set_cookie('id', str(user.id), httponly=False, max_age=24*60*60, samesite='Lax', secure=False)
+        return response, 200
 
     except Exception as e:
         return jsonify({'message': str(e)}), 500

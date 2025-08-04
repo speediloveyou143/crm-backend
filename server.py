@@ -2,6 +2,7 @@ from flask import Flask
 from flask_cors import CORS
 from src.config.database import init_db
 from src.routes.user_routes import user_bp
+from src.routes.features_route import features_bp
 from dotenv import load_dotenv
 import os
 
@@ -29,6 +30,7 @@ CORS(app,
 
 # Register Blueprints with url_prefix
 app.register_blueprint(user_bp, url_prefix='/api/users')
+app.register_blueprint(features_bp,url_prefix='/api/features')
 
 if __name__ == '__main__':
     app.run(debug=True)
