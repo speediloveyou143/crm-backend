@@ -29,6 +29,9 @@ CORS(app,
 
 # Register Blueprints with url_prefix
 app.register_blueprint(user_bp, url_prefix='/api/users')
+@app.route("/",methods=["GET"])
+def home():
+    return "home"
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True,host="localhost")
