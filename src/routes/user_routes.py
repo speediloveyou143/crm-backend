@@ -48,8 +48,7 @@ def signup():
             'message': 'User created successfully',
             'user': {'name': user.name, 'email': user.email, 'role': user.role,'phone_number':user.phone_number,'business_Type':user.business_Type,'company_Name':user.company_Name}
         }))
-        response.set_cookie('token', token, httponly=False, max_age=24*60*60, samesite='Lax', secure=False)
-        response.set_cookie('id', str(user.id), httponly=False, max_age=24*60*60, samesite='Lax', secure=False)
+        
         return response, 200
 
     except Exception as e:

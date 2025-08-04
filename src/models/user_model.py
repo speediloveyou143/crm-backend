@@ -11,7 +11,7 @@ class Current_Pay(EmbeddedDocument):
     current_plan=StringField()
     started_at=DateTimeField()
     valid_upto = DateTimeField()
-    amount=StringField(required=True,default="free")
+    amount=StringField(required=True,default='free')
 
     
 class UserField(EmbeddedDocument):
@@ -21,7 +21,7 @@ class UserField(EmbeddedDocument):
     required=StringField(required=True)
 
 class User(Document):
-    name = StringField(max_length=100)
+    name = StringField(required=True,max_length=100)
     email = EmailField(required=True, unique=True)
     phone_number = StringField(required=True, max_length=15,unique=True)
     password = StringField(required=True)
@@ -35,6 +35,6 @@ class User(Document):
     all_Pays = ListField(EmbeddedDocumentField(Current_Pay))
     user_Fields = ListField(EmbeddedDocumentField(UserField)) 
     user_leads = ListField(DictField())
-    meta = {'collection': 'users'}
+    meta = {'collection': 'users','db_alias':'default'}
 
 
