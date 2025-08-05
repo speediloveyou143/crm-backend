@@ -36,23 +36,12 @@ def signup():
             business_Type=data["business_Type"],
             role='user'  # Default role since frontend doesn't send it
         )
-        user.save()
-
-        # Generate JWT
-        token = jwt.encode({
-            'email': user.email,
-            'role': user.role,
-            'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=24)
-        }, current_app.config['SECRET_KEY'], algorithm="HS256")  # Use current_app instead of request.app
-
-        # Set cookie
-        response = make_response(jsonify({
-            'message': 'User created successfully',
-            'user': {'name': user.name, 'email': user.email, 'role': user.role,'phone_number':user.phone_number,'business_Type':user.business_Type,'company_Name':user.company_Name}
-        }))
+        result=user.save()
+        if result:
+            return jsonify({"messge":"sign up successfull"}), 200
+        else:
+            return jsonify({"messge":"sign up failed"}), 404
         
-        return response, 200
-
     except Exception as e:
         return jsonify({'message': str(e)}), 500
 

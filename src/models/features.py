@@ -5,7 +5,7 @@ class Badge(EmbeddedDocument):
     badge_sub_label = StringField()
     badge_color = StringField()
 
-class Feature(EmbeddedDocument):
+class Features(Document):
     name = StringField(required=True)
     icon_name = StringField(required=True) 
     icon_class_name = StringField(required=True)
@@ -14,5 +14,3 @@ class Feature(EmbeddedDocument):
     hover_bg_color = StringField(required=True)
     badge = EmbeddedDocumentField(Badge)
 
-class Features(Document):
-    data = ListField(EmbeddedDocumentField(Feature))
