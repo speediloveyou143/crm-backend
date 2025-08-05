@@ -4,7 +4,7 @@ import jwt
 import datetime
 import bcrypt
 from ..models.user_model import User
-
+from src.models.contact_model import ContactOption
 user_bp = Blueprint('user', __name__)
 
 # Signup API
@@ -85,3 +85,28 @@ def signin():
 
     except Exception as e:
         return jsonify({'message': str(e)}), 500
+    
+    
+
+
+@user_bp.route(" /contacts", methods=["POST"])
+def get_contacts():
+    try:
+        data=request.get_data()
+        contact = ContactOption(
+           
+            Salesemail=data['email'],
+            UpdateEmail=data['email'],
+            title=data['title'],
+            image=data['image'],
+            salesalt=data['alt'],
+            Updatealt=data['alt']
+            
+    
+            
+        )
+        contact.save()
+        
+        return "message"
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
