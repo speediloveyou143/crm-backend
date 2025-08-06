@@ -3,9 +3,9 @@ from flask import current_app  # Import current_app
 import jwt
 import datetime
 import bcrypt
-import os
 
 from ..models.user_model import User
+from..models.user_model import Location
 
 user_bp = Blueprint('user', __name__)
 
@@ -15,7 +15,7 @@ def signup():
     try:
         data = request.get_json()
         # Validate required fields
-        required_fields = ['name', 'email', 'phone_number', 'password']  # Removed 'role' to match frontend
+        required_fields = ['name', 'email', 'phone_number', 'password',"company_Name","business_Type","location"]  # Removed 'role' to match frontend
         if not all(field in data for field in required_fields):
             return jsonify({'message': 'Missing required fields'}), 400
 
@@ -27,30 +27,28 @@ def signup():
         hashed_password = bcrypt.hashpw(data['password'].encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
 
         # Create new user with hashed password
+        location = data.get("location")
         user = User(
             name=data['name'],
             email=data['email'],
             phone_number=data.get('phone_number', ''),  # Use phone_number to match frontend 'mobile'
             password=hashed_password,
+            company_Name=data["company_Name"],
+            business_Type=data["business_Type"],
+            location=Location(
+                city=location.get('city'),
+                state=location.get('state'),
+                longitude=location.get('longitude'),
+                latitude=location.get('latitude')
+            ),
             role='user'  # Default role since frontend doesn't send it
-        )
-        user.save()
-
-        # Generate JWT
-        token = jwt.encode({
-            'email': user.email,
-            'role': user.role,
-            'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=24)
-        }, current_app.config['SECRET_KEY'], algorithm="HS256")  # Use current_app instead of request.app
-
-        # Set cookie
-        response = make_response(jsonify({
-            'message': 'User created successfully',
-            'user': {'name': user.name, 'email': user.email, 'role': user.role}
-        }))
-        response.set_cookie('token', token, httponly=True, max_age=24*60*60, samesite='Lax', secure=True)
-        return response, 201
-
+            )
+        result=user.save()
+        if result:
+            return jsonify({"messge":"sign up successfull"}), 200
+        else:
+            return jsonify({"messge":"sign up failed"}), 404
+        
     except Exception as e:
         return jsonify({'message': str(e)}), 500
 
