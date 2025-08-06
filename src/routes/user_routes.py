@@ -3,9 +3,9 @@ from flask import current_app  # Import current_app
 import jwt
 import datetime
 import bcrypt
-import os
 
 from ..models.user_model import User
+from..models.user_model import Location
 
 user_bp = Blueprint('user', __name__)
 
@@ -15,7 +15,7 @@ def signup():
     try:
         data = request.get_json()
         # Validate required fields
-        required_fields = ['name', 'email', 'phone_number', 'password',"company_Name","business_Type"]  # Removed 'role' to match frontend
+        required_fields = ['name', 'email', 'phone_number', 'password',"company_Name","business_Type","location"]  # Removed 'role' to match frontend
         if not all(field in data for field in required_fields):
             return jsonify({'message': 'Missing required fields'}), 400
 
@@ -27,6 +27,7 @@ def signup():
         hashed_password = bcrypt.hashpw(data['password'].encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
 
         # Create new user with hashed password
+        location = data.get("location")
         user = User(
             name=data['name'],
             email=data['email'],
@@ -34,8 +35,14 @@ def signup():
             password=hashed_password,
             company_Name=data["company_Name"],
             business_Type=data["business_Type"],
+            location=Location(
+                city=location.get('city'),
+                state=location.get('state'),
+                longitude=location.get('longitude'),
+                latitude=location.get('latitude')
+            ),
             role='user'  # Default role since frontend doesn't send it
-        )
+            )
         result=user.save()
         if result:
             return jsonify({"messge":"sign up successfull"}), 200

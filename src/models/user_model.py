@@ -12,6 +12,7 @@ class Current_Pay(EmbeddedDocument):
     started_at=DateTimeField()
     valid_upto = DateTimeField()
     amount=StringField(required=True,default='free')
+    payment_id=StringField()
 
     
 class UserField(EmbeddedDocument):
