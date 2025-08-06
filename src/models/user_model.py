@@ -11,7 +11,8 @@ class Current_Pay(EmbeddedDocument):
     current_plan=StringField()
     started_at=DateTimeField()
     valid_upto = DateTimeField()
-    amount=StringField(required=True,default='free')
+    amount=StringField(default="0")
+    plan_type=StringField(default="free")
     payment_id=StringField()
 
     
