@@ -5,7 +5,9 @@ import datetime
 import bcrypt
 
 from ..models.user_model import User
+
 from..models.user_model import Location
+
 
 user_bp = Blueprint('user', __name__)
 
@@ -128,3 +130,4 @@ def sign_out():
     response.delete_cookie("token")
     response.delete_cookie("id")
     return response
+
