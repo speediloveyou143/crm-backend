@@ -2,6 +2,12 @@ from flask import Flask
 from flask_cors import CORS
 from src.config.database import init_db
 from src.routes.user_routes import user_bp
+
+from src.routes.contact_routes import contact_bp
+
+from src.routes.features_route import features_bp
+from src.routes.pricing_routes import pricing_bp
+
 from dotenv import load_dotenv
 import os
 
@@ -12,6 +18,7 @@ print(os.getenv('FRONTEND_ORIGIN'))  # Debug print to verify FRONTEND_ORIGIN is 
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv('JWT_KEY')  # Load secret key from .env
+
 
 # Initialize MongoDB connection
 init_db()
@@ -29,6 +36,13 @@ CORS(app,
 
 # Register Blueprints with url_prefix
 app.register_blueprint(user_bp, url_prefix='/api/users')
+app.register_blueprint(contact_bp, url_prefix='/api/contact')
+app.register_blueprint(features_bp,url_prefix='/api/features')
+
+@app.route("/",methods=["GET"])
+def home():
+    return "home"
+app.register_blueprint(pricing_bp, url_prefix='/api/pricing')
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True,host="localhost")
