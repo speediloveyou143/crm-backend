@@ -10,32 +10,35 @@ from src.routes.pricing_routes import pricing_bp
 
 from dotenv import load_dotenv
 import os
+from src.routes.privacy_policy_routes import privacy_policy_bp
 
-# Load environment variables from .env file
+
 load_dotenv()
-print(os.getenv('JWT_KEY'))  # Debug print to verify JWT_KEY is loaded
-print(os.getenv('FRONTEND_ORIGIN'))  # Debug print to verify FRONTEND_ORIGIN is loaded
+print(os.getenv('JWT_KEY'))  
+print(os.getenv('FRONTEND_ORIGIN')) 
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = os.getenv('JWT_KEY')  # Load secret key from .env
+app.config['SECRET_KEY'] = os.getenv('JWT_KEY')  
 
 
 # Initialize MongoDB connection
 init_db()
 
-# Configure CORS to allow requests from frontend origin with proper preflight handling
+
 frontend_origin = os.getenv('FRONTEND_ORIGIN')
 if not frontend_origin:
     raise ValueError("FRONTEND_ORIGIN is not set in .env file")
 
 CORS(app, 
      resources={r"/api/*": {"origins": [frontend_origin], "supports_credentials": True}},
-     methods=['GET', 'POST', 'OPTIONS'],  # Explicitly allow OPTIONS for preflight
-     allow_headers=['Content-Type', 'Authorization']  # Allow necessary headers
+     methods=['GET', 'POST', 'OPTIONS'],  
+     allow_headers=['Content-Type', 'Authorization']  
 )
 
-# Register Blueprints with url_prefix
+
 app.register_blueprint(user_bp, url_prefix='/api/users')
+
+app.register_blueprint(privacy_policy_bp,url_prefix='/api/privacy')
 app.register_blueprint(contact_bp, url_prefix='/api/contact')
 app.register_blueprint(features_bp,url_prefix='/api/features')
 
@@ -43,6 +46,7 @@ app.register_blueprint(features_bp,url_prefix='/api/features')
 def home():
     return "home"
 app.register_blueprint(pricing_bp, url_prefix='/api/pricing')
+
 
 if __name__ == '__main__':
     app.run(debug=True,host="localhost")
