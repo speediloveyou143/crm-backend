@@ -1,3 +1,35 @@
-venv
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.log
+
+# Virtual environment
+venv/
+env/
+
+# Environment variables
+.env
+
+# IDE / editor configs
+.vscode/
+.idea/
+
+# OS-specific files
+.DS_Store
+
+# Python dependencies
+*.egg-info/
+dist/
+build/
+
+# Coverage / testing
+htmlcov/
+.coverage
+.coverage.*
+.cache
+pytest_cache/
+
 
 
